@@ -31,3 +31,16 @@ To work with the data more easily, you can use `xtensor` as described in [depend
 
 To use this header you'll need the HDF5 library which you can find here [https://www.hdfgroup.org](https://www.hdfgroup.org/) or in your repositories.
 Optionally, you can use [xtensor](http://quantstack.net/xtensor) to load the data directly into `xtensor` objects. In this case, `USE_XTENSOR` must be defined before including `nlos_reader.h` and the appropriate headers for `xtensor` will be included and used.
+
+## Usage
+
+To use it in a C++ project just include `nlos_loader.h` and link the HDF5 library. To simplify builds you can use the cmake commands
+```{cmake}
+find_package (HDF5 REQUIRED COMPONENTS CXX)
+include_directories(${HDF5_INCLUDE_DIRS})
+target_link_libraries(<your_binary> ${HDF5_LIBRARIES})
+``` 
+as in the CMakeLists.txt file included for building the example.
+
+To load a file, just create an `nlos_data` object from its filename string.
+The constructor will load all the values from the file, throwing an exception if the file can't be read.
