@@ -62,7 +62,7 @@ struct simple_tensor {
 #define array_type simple_tensor
 #endif
 
-class nlos_dataset {
+class nlos_loader {
     private:
     /// Constant field name definitions.
     const std::string DS_CAM_GRID_POSITIONS = "cameraGridPositions";
@@ -121,7 +121,7 @@ class nlos_dataset {
     }
 
     public:
-    nlos_dataset(std::string file_path) {
+    nlos_loader(std::string file_path) {
         H5::H5File file(file_path, H5F_ACC_RDONLY);
         data = load_field_array<float>(file.openDataSet(DS_DATA));
         camera_point_positions = load_field_array<float>(file.openDataSet(DS_CAM_GRID_POSITIONS));

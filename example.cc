@@ -1,29 +1,30 @@
-#include "nlos_reader.h"
+#include "nlos_loader.h"
 #include <chrono>
 
+/// Example loading and showing some values from an NLOS dataset.
 int main(int argc, char* argv[]) {
-    nlos_dataset a(argv[1]);
+    nlos_loader data(argv[1]);
     #ifdef USE_XTENSOR
-    std::cout << "Bin resolution: " << a.deltat << '\n' <<
-                 "Bins: " << a.bins << '\n' << 
-                 "Cam grid dimensions: " << a.camera_grid_dimensions << '\n' << 
+    std::cout << "Bin resolution: " << data.deltat << '\n' <<
+                 "Bins: " << data.bins << '\n' << 
+                 "Cam grid dimensions: " << data.camera_grid_dimensions << '\n' << 
                  "Data size: ";
-    for (auto const i :  a.data.shape()) {
+    for (auto const i :  data.data.shape()) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
-    std:: cout << "Is confocal?: " << a.is_confocal << '\n' << 
-    "Camera positions: " << a.camera_point_positions;
+    std:: cout << "Is confocal?: " << data.is_confocal << '\n' << 
+    "Camera positions: " << data.camera_point_positions;
 #else 
-    std::cout << "Bin resolution: "; a.deltat.print();
-    std::cout << "Bins: "; a.bins.print();
-    std::cout << "Cam grid dimensions: "; a.camera_grid_dimensions.print();
+    std::cout << "Bin resolution: "; data.deltat.print();
+    std::cout << "Bins: "; data.bins.print();
+    std::cout << "Cam grid dimensions: "; data.camera_grid_dimensions.print();
     std::cout << "Data size: ";
-    for (auto const i : a.data.shape) {
+    for (auto const i : data.data.shape) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
-    std::cout << "Is confocal?: "; a.is_confocal.print();
-    std::cout << "Camera positions: "; a.camera_point_positions.print();
+    std::cout << "Is confocal?: "; data.is_confocal.print();
+    std::cout << "Camera positions: "; data.camera_point_positions.print();
 #endif 
 }
