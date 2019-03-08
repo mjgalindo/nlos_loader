@@ -1,9 +1,10 @@
-#include "nlos_loader.h"
+#define USE_XTENSOR
+#include "nlos_loader.hpp"
 #include <chrono>
 
 /// Example loading and showing some values from an NLOS dataset.
 int main(int argc, char* argv[]) {
-    nlos_loader data(argv[1]);
+    NLOSData data(argv[1], {3}, false);
     #ifdef USE_XTENSOR
     std::cout << "Bin resolution: " << data.deltat << '\n' <<
                  "Bins: " << data.bins << '\n' << 
@@ -25,6 +26,6 @@ int main(int argc, char* argv[]) {
     }
     std::cout << '\n';
     std::cout << "Is confocal?: "; data.is_confocal.print();
-    std::cout << "Camera positions: "; data.camera_point_positions.print();
+    std::cout << "Camera positions: "; data.camera_grid_positions.print();
 #endif 
 }

@@ -2,10 +2,8 @@ project(dsreader)
 
 cmake_minimum_required(VERSION 3.11)
 
-set (CMAKE_CXX_STANDARD 14)
-set(CMAKE_BUILD_TYPE Release)
 add_executable(loader_example example.cc)
-
+target_compile_features(loader_example PRIVATE cxx_std_14)
 option(USE_XTENSOR OFF)
 
 if (USE_XTENSOR)
@@ -19,5 +17,5 @@ else()
 endif(USE_XTENSOR)
 
 find_package (HDF5 REQUIRED COMPONENTS CXX)
-include_directories(${HDF5_INCLUDE_DIRS})
+target_include_directories(loader_example PRIVATE ${HDF5_INCLUDE_DIRS})
 target_link_libraries(loader_example ${HDF5_LIBRARIES})

@@ -27,6 +27,8 @@ It works with both `hdf5` and `mat` files so long as the following fields can be
 By default, all data is loaded into structs containing the raw carray, its size and its shape (in case it's an n-dimensional tensor as is the case for the captures).
 To work with the data more easily, you can use `xtensor` as described in [dependencies](##Dependencies).
 
+A boolean value `is_row_major` indicates whether the previous data shapes are changed for a row-major scheme with the fastest-changing dimensions in the later axes.
+
 ## Dependencies
 
 To use this header you'll need the HDF5 library which you can find here [https://www.hdfgroup.org](https://www.hdfgroup.org/) or in your repositories.
@@ -37,10 +39,11 @@ Optionally, you can use [xtensor](http://quantstack.net/xtensor) to load the dat
 To use it in a C++ project just include `nlos_loader.h` and link the HDF5 library. To simplify builds you can use the cmake commands
 ```{cmake}
 find_package (HDF5 REQUIRED COMPONENTS CXX)
-include_directories(${HDF5_INCLUDE_DIRS})
-target_link_libraries(<your_binary> ${HDF5_LIBRARIES})
+target_include_directories(<your_target> ${HDF5_INCLUDE_DIRS})
+target_link_libraries(<your_target> ${HDF5_LIBRARIES})
 ``` 
 as in the CMakeLists.txt file included for building the example.
 
-To load a file, just create an `nlos_data` object from its filename string.
+To load a file, just create an `NLOSData` instance from its filename string and the bounces you want to load (starting from the 3rd and up to the 7th).
+For instance, `NLOSData("example.hdf5", {3,4,5})` will load all the metadata from `example.hdf5` including the transient data for the 3rd, 4th and 5th bounces.
 The constructor will load all the values from the file, throwing an exception if the file can't be read.
