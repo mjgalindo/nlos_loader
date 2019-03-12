@@ -169,9 +169,14 @@ class NLOSData {
         dataset.read(buff, ptype, mspace, dataspace);
         #ifdef USE_XTENSOR
         array_type<T> retval = xt::adapt(buff, num_elements, xt::no_ownership(), dimensions);
+
         if (sum_bounces && bounces.size() > 1)
+	{
+	    dimensions[bounce_axis] = 1;
             retval = xt::sum(retval, {bounce_axis});
-		#else
+            retval.reshape(dimensions);
+	}
+	#else
         array_type<T> retval;
         retval.buff = buff;
         retval.total_elements = num_elements;

@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     }
     std::cout << '\n';
     std:: cout << "Is confocal?: " << data.is_confocal << '\n' << 
-    "Camera positions: " << data.camera_point_positions;
+    "Camera positions: " << data.camera_grid_positions;
 #else 
     std::cout << "Bin resolution: "; data.deltat.print();
     std::cout << "Bins: "; data.bins.print();
