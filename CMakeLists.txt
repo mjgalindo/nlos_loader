@@ -1,6 +1,6 @@
 project(dsreader)
 
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.10)
 
 add_executable(loader_example example.cc)
 target_compile_features(loader_example PRIVATE cxx_std_14)
