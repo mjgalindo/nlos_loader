@@ -1,4 +1,3 @@
-#define USE_XTENSOR
 #include "nlos_loader.hpp"
 #include <chrono>
 

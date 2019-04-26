@@ -18,14 +18,19 @@
 #include <xtensor/xfunction.hpp>
 #include <xtensor/xview.hpp>
 #include <xtensor/xmath.hpp>
+
+#include "xtensor/xfixed.hpp"
+#include "xtensor/xnoalias.hpp"
+#include "xtensor/xstrided_view.hpp"
+#include "xtensor/xtensor.hpp"
 #define array_type xt::xarray
 #else
 template <typename T>
 struct simple_tensor {
     std::vector<uint32_t> shape;
-    T *buff = nullptr;
-    uint32_t total_elements = -1u;
-
+    T *buff;
+    uint32_t total_elements;
+    
     // Prints the nd-array
     void print() {
         uint32_t depth = 0;
@@ -114,17 +119,9 @@ class NLOSData {
         array_type<T> retval;
         retval.buff = buff;
         retval.total_elements = num_elements;
-        if (rank == 0)
-        {
-            retval.shape.resize(1);
-            retval.shape[0] = 1;
-        }
-        else
-        {
-            retval.shape.resize(rank);
-            for (int i = 0; i < rank; i++) {
-                retval.shape[i] = dimensions[i];
-            }
+        retval.shape.resize(rank);
+        for (int i = 0; i < rank; i++) {
+            retval.shape[i] = dimensions[i];
         }
         #endif
         return retval;
@@ -134,8 +131,7 @@ class NLOSData {
     array_type<T> load_transient_data_dataset(const H5::DataSet &dataset, 
                                               const std::vector<uint32_t>& bounces,
                                               bool sum_bounces=false,
-                                              bool row_major=false) 
-    {
+                                              bool row_major=false) {
         assert(bounces.size() > 0);
         H5::DataSpace dataspace = dataset.getSpace();
         int rank = dataspace.getSimpleExtentNdims();
@@ -151,8 +147,10 @@ class NLOSData {
         T *buff = (T*) new uint8_t[num_elements*sizeof(T)];
         auto ptype = H5::PredType::NATIVE_FLOAT;
         {
-            std::vector<hsize_t> offset(rank, 0);   // hyperslab offset in the file
-            std::vector<hsize_t> count(dimensions);    // size of the hyperslab in the file
+            std::vector<hsize_t> offset(rank, 0);
+            std::vector<hsize_t> count(rank, 0);
+            for (int i = 0; i < rank; i++)
+                count[i] = dimensions[i];
             count[bounce_axis] = 1;
             dataspace.selectNone();
             for (uint32_t b = 0; b < bounces.size(); b++)
@@ -163,20 +161,19 @@ class NLOSData {
             }
         }
         dimensions[bounce_axis] = bounces.size();
-
+        
         H5::DataSpace mspace = H5::DataSpace(rank, dimensions.data());
 
         dataset.read(buff, ptype, mspace, dataspace);
         #ifdef USE_XTENSOR
         array_type<T> retval = xt::adapt(buff, num_elements, xt::no_ownership(), dimensions);
-
         if (sum_bounces && bounces.size() > 1)
-	{
-	    dimensions[bounce_axis] = 1;
+        {
+            dimensions[bounce_axis] = 1;
             retval = xt::sum(retval, {bounce_axis});
             retval.reshape(dimensions);
-	}
-	#else
+        }
+		#else
         array_type<T> retval;
         retval.buff = buff;
         retval.total_elements = num_elements;

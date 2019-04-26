@@ -17,5 +17,5 @@ else()
 endif(USE_XTENSOR)
 
 find_package (HDF5 REQUIRED COMPONENTS CXX)
-target_include_directories(loader_example PRIVATE ${HDF5_INCLUDE_DIRS})
+target_include_directories(loader_example PRIVATE ${HDF5_INCLUDE_DIRS} xtl/include xtensor/include)
 target_link_libraries(loader_example ${HDF5_LIBRARIES})
